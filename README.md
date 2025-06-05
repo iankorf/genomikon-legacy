@@ -1,5 +1,5 @@
-genomikon
-=========
+genomikon-legacy
+================
 
 Genomic sequence analysis library and applications. Not intended to be used for
 large projects or lab projects. More like Ian's private/public C sandbox.
