@@ -44,13 +44,22 @@ int main (int argc, char ** argv) {
 	sqlite3 *db;
 	int rc = sqlite3_open(dbname, &db);
 	if (rc != SQLITE_OK) yikes(sqlite3_errmsg(db));
-	if (VERBOSE) fprintf(stderr, "database opened\n");
-
-
-	sqlite3_close(db);
+	const char *sql = "SELECT uid, beg, end FROM feature WHERE type = 'gene';";
+	sqlite3_stmt *stmt;
+	rc = sqlite3_prepare_v2(db, sql, -1, &stmt, NULL);
+	if (rc != SQLITE_OK) yikes(sqlite3_errmsg(db));    
+    while (sqlite3_step(stmt) == SQLITE_ROW) {
+    	const unsigned char *name = sqlite3_column_text(stmt, 0);
+    	int beg = sqlite3_column_int(stmt, 1);
+    	int end = sqlite3_column_int(stmt, 2);
+    	printf("%s %d %d %d\n", name, beg, end, end - beg + 1);
+    }
+	sqlite3_finalize(stmt);
+    sqlite3_close(db);
 
 
 	if (VERBOSE && DEBUG) yikes("end");
 
 	return 0;
 }
+
